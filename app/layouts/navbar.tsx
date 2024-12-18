@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { navLists } from "@/app/constant/data";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,18 +15,14 @@ export default function Navbar() {
   const [isMenuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="dark:bg-black bg-red-50 border-b-2">
+    <nav className="dark:bg-black border-b-[1px]">
       <div className="max-w-screen-lg flex flex-wrap items-center justify-between mx-auto p-4">
         {/* Logo */}
         <Link
           href="/"
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
-          <img
-            src="assets/logo.webp"
-            className="h-8"
-            alt="Anoview logo"
-          />
+          <img src="assets/logo.webp" className="h-8" alt="Anoview logo" />
           <span className="self-center text-2xl font-semibold whitespace-nowrap @dark:text-white text-black">
             Anoview
           </span>
@@ -67,59 +62,132 @@ export default function Navbar() {
         >
           <ul
             className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg
-            md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 
-            dark:bg-black md:dark:bg-black dark:border-gray-700 dark:text-white bg-white md:bg-transparent text-black"
+  md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 
+  dark:bg-black md:dark:bg-black dark:border-gray-700 dark:text-white bg-white md:bg-transparent text-black"
           >
-            {navLists.map((nav) => {
-              return (
-                <li key={nav.id} className="mb-4 md:mb-0 lg:mb-0">
-                  {nav.a ? (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <span className="cursor-pointer hover:text-red-400 flex gap-2">
-                         
-                          <Image src={nav.nameImage} alt="nav.name" width={20} height={10}/>
-                          {nav.name}
-                        </span>
-                      </DropdownMenuTrigger>
+            {/* Tiktok Trends */}
+            <li className="mb-4 md:mb-0 lg:mb-0">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <span className="cursor-pointer hover:text-red-400 flex gap-2">
+                    <Image
+                      src="/assets/hastag.webp"
+                      alt="Tiktok trends"
+                      width={20}
+                      height={10}
+                    />
+                    Tiktok trends
+                  </span>
+                </DropdownMenuTrigger>
 
-                      <DropdownMenuContent className="p-2 px-4">
-                        {["a", "b", "c", "d"].map((key) => {
-                          const item = nav[key];
-                          if (item) {
-                            return (
-                              <DropdownMenuItem asChild key={key}>
-                                <Link href={item.url} className="my-2">
-                                  <span className="flex items-center gap-2">
-                                    {/* Check if item.icon is an image or emoji */}
-                                    {typeof item.icon === "string" &&
-                                    item.icon.startsWith("/") ? (
-                                      <img
-                                        src={item.icon}
-                                        alt={item.label}
-                                        className="w-5 h-5"
-                                      />
-                                    ) : (
-                                      <span>{item.icon}</span> // Render emoji or text icon
-                                    )}
-                                    {item.label}
-                                  </span>
-                                </Link>
-                              </DropdownMenuItem>
-                            );
-                          }
-                          return null;
-                        })}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  ) : (
-                    <Link href="/" className="cursor-pointer">
-                      Home
+                <DropdownMenuContent className="p-2 px-4">
+                  <DropdownMenuItem asChild>
+                    <Link href="/trending-creators" className="my-2">
+                      <span className="flex items-center gap-2">
+                        <img
+                          src="/assets/hot-deal.webp"
+                          alt="Trending Creators"
+                          className="w-5 h-5"
+                        />
+                        Trending Creators
+                      </span>
                     </Link>
-                  )}
-                </li>
-              );
-            })}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/trending-videos" className="my-2">
+                      <span className="flex items-center gap-2">
+                        <img
+                          src="/assets/video.webp"
+                          alt="Trending Videos"
+                          className="w-5 h-5"
+                        />
+                        Trending Videos
+                      </span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/trending-songs" className="my-2">
+                      <span className="flex items-center gap-2">
+                        <img
+                          src="/assets/music.webp"
+                          alt="Trending Songs"
+                          className="w-5 h-5"
+                        />
+                        Trending Songs
+                      </span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/trending-hashtags" className="my-2">
+                      <span className="flex items-center gap-2">
+                        <img
+                          src="/assets/hastag.webp"
+                          alt="Trending Hashtags"
+                          className="w-5 h-5"
+                        />
+                        Trending Hashtags
+                      </span>
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </li>
+
+            {/* Tiktok Tools */}
+            <li className="mb-4 md:mb-0 lg:mb-0">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <span className="cursor-pointer hover:text-red-400 flex gap-2">
+                    <Image
+                      src="/assets/hot-deal.webp"
+                      alt="Tiktok tools"
+                      width={20}
+                      height={10}
+                    />
+                    Tiktok tools
+                  </span>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent className="p-2 px-4">
+                  <DropdownMenuItem asChild>
+                    <Link href="/anonymous-tiktok-viewer" className="my-2">
+                      <span className="flex items-center gap-2">
+                        <img
+                          src="/assets/video.webp"
+                          alt="Anonymous TikTok Viewer"
+                          className="w-5 h-5"
+                        />
+                        Anonymous TikTok Viewer
+                      </span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/tiktok-video-downloader" className="my-2">
+                      <span className="flex items-center gap-2">
+                        <img
+                          src="/assets/download.webp"
+                          alt="TikTok Video Downloader"
+                          className="w-5 h-5"
+                        />
+                        TikTok Video Downloader
+                      </span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/tiktok-mp3-downloader" className="my-2">
+                      <span className="flex items-center gap-2">
+                        <img
+                          src="/assets/music-down.webp"
+                          alt="TikTok Mp3/Audio Downloader"
+                          className="w-5 h-5"
+                        />
+                        TikTok Mp3/Audio Downloader
+                      </span>
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </li>
           </ul>
         </div>
       </div>

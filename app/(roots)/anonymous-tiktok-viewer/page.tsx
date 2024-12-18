@@ -211,7 +211,6 @@ const Page = () => {
       // Ensure safe access to video play URL
       let videoPlay =
         vDetail?.video?.bitrateInfo?.[0]?.PlayAddr?.UrlList?.[2] || "";
-
       // If there is no valid URL, return empty video URL
       if (!videoPlay) {
         return {
@@ -258,6 +257,7 @@ const Page = () => {
           video_id: videoId || "",
         });
 
+        // proxy video
         const videoUrl = `/api/video?${searchParams.toString()}`;
 
         // Extract video cover and stats, with safe access to avoid null values
@@ -345,7 +345,7 @@ const Page = () => {
         <input
           type="text"
           placeholder="Enter username"
-          className="w-full pl-16 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none text-gray-800"
+          className="w-full pl-16 pr-[90px] py-3 border border-gray-300 rounded-lg focus:outline-none text-gray-800"
           onChange={(e) => setInputData(e.target.value)}
           onKeyDown={handleKeyDown} // Add event listener for the Enter key
         />
@@ -373,11 +373,10 @@ const Page = () => {
         </button>
       </div>
 
-      {/* use only if video automaticlly not updated as new keywords videos 
-      
+      {/* use this loading only if video automaticlly not updated as new keywords videos 
       {loading ? (
         <p>Loading data...</p>
-      ) : ( */}   
+      ) : ( */}
       <div>
         {/* User Info Display */}
         {show && ttData?.data?.authorData?.userInfo?.user && (
@@ -521,7 +520,9 @@ const Page = () => {
                       </video>
                     </div>
                   ) : (
-                    <p className="text-red-500 text-center">No video available</p>
+                    <p className="text-red-500 text-center mt-96">
+                      Not available
+                    </p>
                   )}
 
                   <div className="text-gray-700 flex mt-8 flex-wrap gap-4 justify-center">
@@ -555,25 +556,13 @@ const Page = () => {
                     <div className="text-center mt-2">
                       <p className="font-bold">Hashtags:</p>
                       <div>
-                        {video.hashtagsList.length > 0
-                          ? video.hashtagsList.join(", ")
-                          : "None"}
+                        {video.hashtagsList.length > 0 ? (
+                          video.hashtagsList.join(", ")
+                        ) : (
+                          <p className="text-red-500 text-center">None</p>
+                        )}
                       </div>
                     </div>
-                  </div>
-
-                  <div className="mt-4 text-gray-700">
-                    <p className="text-center font-bold">Listen Music:</p>
-                    {video.musics ? (
-                      <audio controls className="w-full mt-4">
-                        <source src={video.musics} type="audio/mpeg" />
-                        Your browser does not support the audio tag.
-                      </audio>
-                    ) : (
-                      <p className="text-gray-500 text-center">
-                        No music available
-                      </p>
-                    )}
                   </div>
 
                   <div className="mt-4 text-gray-700 text-center bg-green-400 rounded-md p-2">
@@ -587,11 +576,9 @@ const Page = () => {
                         className="bg-pink-600 w-full text-white 
                         px-3 py-2 rounded-md outline-none text-center
                          flex justify-center gap-2 items-center"
-                        href="#"
-                        target="_blank"
                       >
-                        <img
-                          src="assets/cloud-download.webp"
+                        <Image
+                          src="/assets/cloud-download.webp"
                           alt="download now"
                           width={20}
                           height={10}
@@ -604,13 +591,13 @@ const Page = () => {
                       px-3 py-2 rounded-md outline-none text-center
                        flex justify-center gap-2 items-center"
                       >
-                        <img
-                          src="assets/logo.webp"
+                        <Image
+                          src="/assets/logo.webp"
                           alt="download now"
                           width={20}
                           height={10}
                         />
-                        Not Available
+                        Unable to download
                       </a>
                     )}
                   </div>
@@ -631,7 +618,6 @@ const Page = () => {
           </div>
         )}
       </div>
-      {/* )} */}
     </div>
   );
 };
