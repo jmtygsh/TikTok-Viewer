@@ -2,6 +2,12 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 interface Hashtag {
   hashtagName?: string;
@@ -320,7 +326,8 @@ const Page = () => {
   console.log(`nextCursor : ${nextCursor}`);
 
   return (
-    <div className="my-20 flex flex-col items-center">
+    <div className="mt-20 flex flex-col items-center">
+      {/* title of page  */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-800 text-center">
           Anonymous TikTok Viewer
@@ -341,7 +348,7 @@ const Page = () => {
           />
         </div>
         <span className="absolute left-9 text-gray-300">|</span>
-        <span className="absolute left-12 text-gray-500 text-lg">@</span>
+        <span className="absolute left-12 text-gray-500 text-base">@</span>
         <input
           type="text"
           placeholder="Enter username"
@@ -373,209 +380,153 @@ const Page = () => {
         </button>
       </div>
 
-      {/* use this loading only if video automaticlly not updated as new keywords videos 
-      {loading ? (
-        <p>Loading data...</p>
-      ) : ( */}
-      <div>
-        {/* User Info Display */}
-        {show && ttData?.data?.authorData?.userInfo?.user && (
-          <div className="text-center rounded-lg p-6 max-w-xl mx-auto mb-8">
-            <div className="flex flex-col items-center">
-              <img
-                className="mt-4 rounded-full border-2 border-gray-300 shadow-sm"
-                src={user?.avatarMedium || "/default-avatar.png"}
-                alt="Avatar"
-                width={80}
-                height={80}
-              />
-              <div className="flex items-center justify-center mt-4">
-                <h2 className="text-lg font-semibold text-gray-800 mr-2">
-                  @{user?.uniqueId || "Unknown User"}
-                </h2>
-                {user?.verified ? (
-                  <Image
-                    src="/assets/checklist.webp"
-                    alt="Verified"
-                    width={16}
-                    height={16}
-                    className="inline-block"
-                  />
-                ) : (
-                  <Image
-                    src="/assets/remove.webp"
-                    alt="Not Verified"
-                    width={16}
-                    height={16}
-                    className="inline-block"
-                  />
-                )}
-              </div>
-            </div>
-
-            <div className="mt-6 border-t border-gray-200 pt-4">
-              <p className="text-gray-700 text-sm">
-                {user?.signature || "No signature available"}
-              </p>
-              <a
-                href={user?.bioLink?.link || "#"}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-2 block text-blue-500 text-sm hover:underline"
-              >
-                {user?.bioLink?.link || "No link found"}
-              </a>
+      {/* User Info Display */}
+      {show && ttData?.data?.authorData?.userInfo?.user && (
+        <div className="text-center rounded-lg p-6 max-w-xl mx-auto mb-8">
+          <div className="flex flex-col items-center">
+            <img
+              className="mt-4 rounded-full border-2 border-gray-300 shadow-sm"
+              src={user?.avatarMedium || "/default-avatar.png"}
+              alt="Avatar"
+              width={80}
+              height={80}
+            />
+            <div className="flex items-center justify-center mt-4">
+              <h2 className="text-lg font-semibold text-gray-800 mr-2">
+                @{user?.uniqueId || "Unknown User"}
+              </h2>
+              {user?.verified ? (
+                <Image
+                  src="/assets/checklist.webp"
+                  alt="Verified"
+                  width={16}
+                  height={16}
+                  className="inline-block"
+                />
+              ) : (
+                <Image
+                  src="/assets/remove.webp"
+                  alt="Not Verified"
+                  width={16}
+                  height={16}
+                  className="inline-block"
+                />
+              )}
             </div>
           </div>
-        )}
 
-        {/* Stats Display */}
-        {show && stats && (
-          <div className="p-4 m-auto">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 text-center text-sm text-gray-700 mb-8">
-              <div>
-                <p className="font-semibold text-gray-400 my-2 text-center">
-                  Total Followers
-                </p>
-                <p className="text-2xl font-extrabold mt-2">
-                  {stats.followerCount?.toLocaleString() || "N/A"}
-                </p>
-              </div>
-              <div className="md:border-l md:border-gray-300 md:pl-4">
-                <p className="font-semibold text-gray-400 my-2 text-center">
-                  Total Likes
-                </p>
-                <p className="text-2xl font-extrabold mt-2">
-                  {stats.heart?.toLocaleString() || "N/A"}
-                </p>
-              </div>
-              <div className="md:border-l md:border-gray-300 md:pl-4">
-                <p className="font-semibold text-gray-400 my-2 text-center">
-                  Total Videos
-                </p>
-                <p className="text-2xl font-extrabold mt-2">
-                  {stats.videoCount?.toLocaleString() || "N/A"}
-                </p>
-              </div>
-              <div className="md:border-l md:border-gray-300 md:pl-4">
-                <p className="font-semibold text-gray-400 my-2 text-center">
-                  Following
-                </p>
-                <p className="text-2xl font-extrabold mt-2">
-                  {stats.followingCount?.toLocaleString() || "N/A"}
-                </p>
+          <div className="mt-6 border-t border-gray-200 pt-4">
+            <p className="text-gray-700 text-sm">
+              {user?.signature || "No signature available"}
+            </p>
+            <a
+              href={user?.bioLink?.link || "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 block text-blue-500 text-sm hover:underline"
+            >
+              {user?.bioLink?.link || "No link found"}
+            </a>
+          </div>
+        </div>
+      )}
+
+      {/* Stats Display */}
+      {show && stats && (
+        <div className="p-4 m-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 text-center text-sm text-gray-700 mb-8">
+            <div>
+              <p className="font-semibold text-gray-400 my-2 text-center">
+                Total Followers
+              </p>
+              <p className="text-2xl font-extrabold mt-2">
+                {stats.followerCount?.toLocaleString() || "N/A"}
+              </p>
+            </div>
+            <div className="md:border-l md:border-gray-300 md:pl-4">
+              <p className="font-semibold text-gray-400 my-2 text-center">
+                Total Likes
+              </p>
+              <p className="text-2xl font-extrabold mt-2">
+                {stats.heart?.toLocaleString() || "N/A"}
+              </p>
+            </div>
+            <div className="md:border-l md:border-gray-300 md:pl-4">
+              <p className="font-semibold text-gray-400 my-2 text-center">
+                Total Videos
+              </p>
+              <p className="text-2xl font-extrabold mt-2">
+                {stats.videoCount?.toLocaleString() || "N/A"}
+              </p>
+            </div>
+            <div className="md:border-l md:border-gray-300 md:pl-4">
+              <p className="font-semibold text-gray-400 my-2 text-center">
+                Following
+              </p>
+              <p className="text-2xl font-extrabold mt-2">
+                {stats.followingCount?.toLocaleString() || "N/A"}
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-col md:flex-row justify-center mb-8">
+            <div className="p-4 w-full md:w-[48%]">
+              <h2 className="font-extrabold text-gray-700 mb-4 border-b-2">
+                Hashtags
+              </h2>
+              <div className="flex flex-wrap gap-3 ">
+                {hashtags.map((hashtag: string, index: number) => (
+                  <p
+                    key={index}
+                    className="underline cursor-pointer text-gray-600"
+                  >
+                    #{hashtag}
+                  </p>
+                ))}
               </div>
             </div>
-            <div className="flex flex-col md:flex-row justify-center mb-8">
-              <div className="p-4 w-full md:w-[48%]">
-                <h2 className="font-extrabold text-gray-700 mb-4 border-b-2">
-                  Hashtags
-                </h2>
-                <div className="flex flex-wrap gap-3 ">
-                  {hashtags.map((hashtag: string, index: number) => (
-                    <p
-                      key={index}
-                      className="underline cursor-pointer text-gray-600"
-                    >
-                      #{hashtag}
-                    </p>
-                  ))}
-                </div>
-              </div>
-              <div className="p-4 w-full md:w-[48%]">
-                <h2 className="font-extrabold text-gray-700 mb-4 border-b-2">
-                  Most Used Hashtags
-                </h2>
-                <div className="flex flex-wrap gap-3">
-                  {Object.entries(counts).map(([hashtag, count]) => (
-                    <p
-                      key={hashtag}
-                      className="text-gray-600 bg-blue-100 hover:underline cursor-pointer"
-                    >
-                      <span>#{hashtag}</span>
-                      <span>({count})</span>
-                    </p>
-                  ))}
-                </div>
+            <div className="p-4 w-full md:w-[48%]">
+              <h2 className="font-extrabold text-gray-700 mb-4 border-b-2">
+                Most Used Hashtags
+              </h2>
+              <div className="flex flex-wrap gap-3">
+                {Object.entries(counts).map(([hashtag, count]) => (
+                  <p
+                    key={hashtag}
+                    className="text-gray-600 bg-blue-100 hover:underline cursor-pointer"
+                  >
+                    <span>#{hashtag}</span>
+                    <span>({count})</span>
+                  </p>
+                ))}
               </div>
             </div>
+          </div>
+          <div className="mb-8 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-2 w-full m-auto">
+            {videoDetails.map((video, index) => (
+              <div
+                key={`video-${index}`}
+                className="border rounded-md p-4 bg-white"
+              >
+                {video.videos ? (
+                  <div key={video.videos}>
+                    <video
+                      controls
+                      // poster={video.videoCover}
+                      className="w-full rounded-md"
+                      preload="metadata"
+                      playsInline
+                    >
+                      <source src={video.videos} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
 
-            <div className="mb-8 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-2 w-full  md:w-[90%] m-auto">
-              {videoDetails.map((video, index) => (
-                <div
-                  key={`video-${index}`}
-                  className="border rounded-md p-4 bg-white"
-                >
-                  {video.videos ? (
-                    <div key={video.videos}>
-                      <video
-                        controls
-                        // poster={video.videoCover}
-                        className="w-full rounded-md"
-                        preload="metadata"
-                        playsInline
-                      >
-                        <source src={video.videos} type="video/mp4" />
-                        Your browser does not support the video tag.
-                      </video>
-                    </div>
-                  ) : (
-                    <p className="text-red-500 text-center mt-96">
-                      Not available
-                    </p>
-                  )}
-
-                  <div className="text-gray-700 flex mt-8 flex-wrap gap-4 justify-center">
-                    <p>
-                      <span className="font-bold">Views:</span>
-                      {video.views.toLocaleString()}
-                    </p>
-                    <p>
-                      <span className="font-bold">Likes:</span>
-                      {video.likes.toLocaleString()}
-                    </p>
-                    <p>
-                      <span className="font-bold">Comments:</span>
-                      {video.comments.toLocaleString()}
-                    </p>
-                    <p>
-                      <span className="font-bold">Shares:</span>
-                      {video.shares.toLocaleString()}
-                    </p>
-                    <p>
-                      <span className="font-bold">Saves:</span>
-                      {video.saves.toLocaleString()}
-                    </p>
-                  </div>
-
-                  <div className="mt-4 text-gray-700">
-                    <p className="text-center">
-                      <span className="font-bold">Hashtag Count:</span>
-                      {video.hashtags.toLocaleString()}
-                    </p>
-                    <div className="text-center mt-2">
-                      <p className="font-bold">Hashtags:</p>
-                      <div>
-                        {video.hashtagsList.length > 0 ? (
-                          video.hashtagsList.join(", ")
-                        ) : (
-                          <p className="text-red-500 text-center">None</p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 text-gray-700 text-center bg-green-400 rounded-md p-2">
-                    <p>Engagement Rate:</p>
-                    <p>{video.engageRate.toFixed(2)}%</p>
-                  </div>
-
-                  <div className="mt-4 flex justify-center">
-                    {video.musics ? (
+                    <div className="mt-4 flex justify-center">
                       <a
-                        className="bg-pink-600 w-full text-white 
+                        className="w-full bg-pink-400 
                         px-3 py-2 rounded-md outline-none text-center
                          flex justify-center gap-2 items-center"
+                        href={video.videos}
+                        download="video.mp4"
                       >
                         <Image
                           src="/assets/cloud-download.webp"
@@ -585,41 +536,289 @@ const Page = () => {
                         />
                         Download Now
                       </a>
-                    ) : (
-                      <a
-                        className="bg-red-600 w-full text-white 
-                      px-3 py-2 rounded-md outline-none text-center
-                       flex justify-center gap-2 items-center"
-                      >
-                        <Image
-                          src="/assets/logo.webp"
-                          alt="download now"
-                          width={20}
-                          height={10}
-                        />
-                        Unable to download
-                      </a>
-                    )}
+                    </div>
+
+                    <div className="mt-2 flex justify-center text-gray-700 text-center bg-green-400 rounded-md p-2">
+                      <p>Engagement Rate:</p>
+                      <p>{video.engageRate.toFixed(2)}%</p>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-red-500 text-center mt-96">
+                    Not available
+                  </p>
+                )}
+
+                <div className="text-gray-700 flex mt-4 flex-wrap gap-4 justify-center">
+                  <p>
+                    <span className="font-bold">Views:</span>
+                    {video.views.toLocaleString()}
+                  </p>
+                  <p>
+                    <span className="font-bold">Likes:</span>
+                    {video.likes.toLocaleString()}
+                  </p>
+                  <p>
+                    <span className="font-bold">Comments:</span>
+                    {video.comments.toLocaleString()}
+                  </p>
+                  <p>
+                    <span className="font-bold">Shares:</span>
+                    {video.shares.toLocaleString()}
+                  </p>
+                  <p>
+                    <span className="font-bold">Saves:</span>
+                    {video.saves.toLocaleString()}
+                  </p>
+                </div>
+
+                <div className="mt-4 text-gray-700">
+                  <p className="text-center">
+                    <span className="font-bold">Hashtag Count:</span>
+                    {video.hashtags.toLocaleString()}
+                  </p>
+                  <div className="text-center mt-2">
+                    <p className="font-bold">Hashtags:</p>
+                    <div>
+                      {video.hashtagsList.length > 0 ? (
+                        video.hashtagsList.join(", ")
+                      ) : (
+                        <p className="text-red-500 text-center">None</p>
+                      )}
+                    </div>
                   </div>
                 </div>
-              ))}
+              </div>
+            ))}
+          </div>
+          <div className="mb-8 flex justify-center">
+            {nextCursor && (
+              <button
+                onClick={() => fetchData(nextCursor, true)}
+                disabled={loadingMore}
+                className="mt-10 bg-button-color text-center text-black bg-blue-400  py-2 px-6 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              >
+                {loadingMore ? "Loading more..." : "Load More"}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="mx-auto mt-20 p-6 bg-white">
+        <div className="mb-10">
+          <h2 className="text-xl font-bold text-gray-800 mb-4">
+            How to use Anonymous TikTok Viewer
+          </h2>
+          <ol className="list-decimal ml-8 text-gray-700 leading-relaxed space-y-3">
+            <li>
+              <strong className="font-semibold"></strong> Enter your favorite
+              creator's username (not url) in the input box and press{" "}
+              <strong className="font-semibold">Enter</strong>.
+            </li>
+            <li>
+              <strong className="font-semibold"></strong> Wait for the data to
+              load. Once ready, you’ll see video details like{" "}
+              <strong className="font-semibold">likes</strong>,{" "}
+              <strong className="font-semibold">views</strong>, and more. You
+              can also download videos directly.
+            </li>
+            <li>
+              <strong className="font-semibold"></strong> Each page initially
+              loads 10 videos To view more, click the
+              <strong className="font-semibold">"Load More"</strong> button. If
+              you want to download videos using URLs, visit our
+              <a
+                href="/tiktok-video-downloader"
+                className="text-blue-500 hover:text-blue-700 font-medium ml-1 underline"
+              >
+                TikTok Video Downloader
+              </a>
+              .
+            </li>
+          </ol>
+        </div>
+        <div className="mb-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Fully Anonymous */}
+            <div className="flex items-center gap-4">
+              <img
+                src="assets/anonymous.png"
+                alt="Fully Anonymous"
+                className="w-8 h-8"
+              />
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                  Fully Anonymous
+                </h3>
+                <p className="text-gray-600">
+                  Your browsing history, profile views, and downloads are{" "}
+                  <strong>not saved</strong>.
+                </p>
+              </div>
             </div>
-            <div className="flex justify-center">
-              {nextCursor && (
-                <button
-                  onClick={() => fetchData(nextCursor, true)}
-                  disabled={loadingMore}
-                  className="mt-10 bg-button-color text-center text-black bg-blue-400  py-2 px-6 rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                >
-                  {loadingMore ? "Loading more..." : "Load More"}
-                </button>
-              )}
+
+            {/* No Watermark */}
+            <div className="flex items-center gap-4">
+              <img
+                src="assets/watermark-download.png"
+                alt="No Watermark"
+                className="w-8 h-8"
+              />
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                  No Watermark
+                </h3>
+                <p className="text-gray-600">
+                  Download videos directly from TikTok without the annoying
+                  watermark.
+                </p>
+              </div>
+            </div>
+
+            {/* No Registration */}
+            <div className="flex items-center gap-4">
+              <img
+                src="assets/no-registration.png"
+                alt="No Registration"
+                className="w-8 h-8"
+              />
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                  No Registration
+                </h3>
+                <p className="text-gray-600">
+                  No need to create an account, log in, or install any apps.
+                  It’s completely hassle-free.
+                </p>
+              </div>
+            </div>
+
+            {/* HD Quality */}
+            <div className="flex items-center gap-4">
+              <img
+                src="assets/hd-quality.png"
+                alt="HD Quality"
+                className="w-8 h-8"
+              />
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                  HD Quality
+                </h3>
+                <p className="text-gray-600">
+                  Enjoy videos in their original full resolution, viewable and
+                  savable on any device.
+                </p>
+              </div>
             </div>
           </div>
-        )}
+        </div>
+        <Accordion type="single" collapsible className="w-full bg-green-300 p-10 rounded-md">
+          <AccordionItem value="item-1">
+            <AccordionTrigger className="text-base">
+              1.Can I use the tool to view private TikTok accounts?
+            </AccordionTrigger>
+            <AccordionContent className="text-sm">
+              No, our tool only allows viewing of publicly available TikTok
+              videos and data. We respect user privacy and do not bypass
+              TikTok's security settings.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-2">
+            <AccordionTrigger className="text-base">
+              2.Will anyone know that I’ve viewed or downloaded their TikTok
+              video?
+            </AccordionTrigger>
+            <AccordionContent className="text-sm">
+              Absolutely not. This tool ensures complete anonymity. Your
+              activity is not logged, and there’s no trace left for the TikTok
+              user.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-3">
+            <AccordionTrigger className="text-base">
+              3.Why do I need to load more posts manually?
+            </AccordionTrigger>
+            <AccordionContent className="text-sm">
+              To optimize performance and load times, we display 10 videos per
+              page by default. The "Load More" button lets you control how much
+              content you want to explore at any time.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-4">
+            <AccordionTrigger className="text-base">
+              4.Can I use this tool on mobile devices?
+            </AccordionTrigger>
+            <AccordionContent className="text-sm">
+              Yes, the tool is fully responsive and works seamlessly on mobile
+              devices, tablets, and desktops. Whether you're on the go or at
+              home, you can access it effortlessly.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-5">
+            <AccordionTrigger className="text-base">
+              5.What formats are available for downloaded videos?
+            </AccordionTrigger>
+            <AccordionContent className="text-sm">
+              Videos are downloaded in their original format (usually MP4) with
+              the highest resolution available, ensuring quality preservation.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-6">
+            <AccordionTrigger className="text-base">
+              6.Is there a limit to how many videos I can view or download?
+            </AccordionTrigger>
+            <AccordionContent className="text-sm">
+              There are no limits! You can view and download as many TikTok
+              videos as you like, completely free.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-7">
+            <AccordionTrigger className="text-base">
+              7.Does this tool work for TikTok videos from all regions?
+            </AccordionTrigger>
+            <AccordionContent className="text-sm">
+              Yes, you can use this tool to view and download TikTok videos from
+              any region, as long as they are publicly available.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-8">
+            <AccordionTrigger className="text-base">
+              8.Does the tool store any of my personal data?
+            </AccordionTrigger>
+            <AccordionContent className="text-sm">
+              No, we don’t collect or store any of your data. The tool operates
+              without requiring login or registration, ensuring your complete
+              privacy.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-9">
+            <AccordionTrigger className="text-base">
+              9.Why is this tool free to use?
+            </AccordionTrigger>
+            <AccordionContent className="text-sm">
+              We believe in providing value without barriers. The tool is
+              supported through other means, ensuring it remains free for all
+              users.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-10">
+            <AccordionTrigger className="text-base">
+              10.Is it legal to download TikTok videos anonymously?
+            </AccordionTrigger>
+            <AccordionContent className="text-sm">
+              Downloading TikTok videos for personal use is generally
+              acceptable. However, ensure you don’t violate TikTok’s terms of
+              service or misuse the content without the creator’s permission.
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </div>
     </div>
   );
 };
 
 export default Page;
+
+
+// 1732592309739
