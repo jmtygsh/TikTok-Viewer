@@ -16,13 +16,13 @@ export default function Navbar() {
 
   return (
     <nav className="dark:bg-black border-b-[1px]">
-      <div className="max-w-screen-lg flex flex-wrap items-center justify-between mx-auto p-4">
+      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         {/* Logo */}
         <Link
           href="/"
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
-          <img src="assets/logo.webp" className="h-8" alt="Anoview logo" />
+          <Image src="/assets/logo.webp" alt="Anoview logo" width={30} height={10}/>
           <span className="self-center text-2xl font-semibold whitespace-nowrap @dark:text-white text-black">
             Anoview
           </span>
@@ -82,24 +82,28 @@ export default function Navbar() {
 
                 <DropdownMenuContent className="p-2 px-4">
                   <DropdownMenuItem asChild>
-                    <Link href="/trending-creators" className="my-2">
+                    <Link href="/trending-posts" className="my-2">
                       <span className="flex items-center gap-2">
-                        <img
+                        <Image
                           src="/assets/hot-deal.webp"
-                          alt="Trending Creators"
+                          alt="trending posts"
                           className="w-5 h-5"
+                          width={100}
+                          height={100}
                         />
-                        Trending Creators
+                        Trending Posts
                       </span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/trending-videos" className="my-2">
                       <span className="flex items-center gap-2">
-                        <img
-                          src="/assets/video.webp"
+                        <Image
+                          src="/assets/video.png"
                           alt="Trending Videos"
                           className="w-5 h-5"
+                          width={100}
+                          height={100}
                         />
                         Trending Videos
                       </span>
@@ -108,10 +112,12 @@ export default function Navbar() {
                   <DropdownMenuItem asChild>
                     <Link href="/trending-songs" className="my-2">
                       <span className="flex items-center gap-2">
-                        <img
+                        <Image
                           src="/assets/music.webp"
                           alt="Trending Songs"
                           className="w-5 h-5"
+                          width={100}
+                          height={100}
                         />
                         Trending Songs
                       </span>
@@ -120,10 +126,12 @@ export default function Navbar() {
                   <DropdownMenuItem asChild>
                     <Link href="/trending-hashtags" className="my-2">
                       <span className="flex items-center gap-2">
-                        <img
+                        <Image
                           src="/assets/hastag.webp"
                           alt="Trending Hashtags"
                           className="w-5 h-5"
+                          width={100}
+                          height={100}
                         />
                         Trending Hashtags
                       </span>
@@ -152,10 +160,12 @@ export default function Navbar() {
                   <DropdownMenuItem asChild>
                     <Link href="/anonymous-tiktok-viewer" className="my-2">
                       <span className="flex items-center gap-2">
-                        <img
-                          src="/assets/video.webp"
+                        <Image
+                          src="/assets/tik-tok.webp"
                           alt="Anonymous TikTok Viewer"
                           className="w-5 h-5"
+                          width={100}
+                          height={100}
                         />
                         Anonymous TikTok Viewer
                       </span>
@@ -164,27 +174,31 @@ export default function Navbar() {
                   <DropdownMenuItem asChild>
                     <Link href="/tiktok-video-downloader" className="my-2">
                       <span className="flex items-center gap-2">
-                        <img
-                          src="/assets/download.webp"
+                        <Image
+                          src="/assets/tik-tok.webp"
                           alt="TikTok Video Downloader"
                           className="w-5 h-5"
+                          width={100}
+                          height={100}
                         />
                         TikTok Video Downloader
                       </span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
+                  {/* <DropdownMenuItem asChild>
                     <Link href="/tiktok-mp3-downloader" className="my-2">
                       <span className="flex items-center gap-2">
-                        <img
-                          src="/assets/music-down.webp"
+                        <Image
+                          src="/assets/tik-tok.webp"
                           alt="TikTok Mp3/Audio Downloader"
                           className="w-5 h-5"
+                          width={100}
+                          height={100}
                         />
                         TikTok Mp3/Audio Downloader
                       </span>
                     </Link>
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
                 </DropdownMenuContent>
               </DropdownMenu>
             </li>

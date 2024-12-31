@@ -17,17 +17,41 @@ export async function GET(req: Request) {
     // Construct the TikTok video URL using the query parameters
     const tikTokUrl = `https://www.tiktok.com/aweme/v1/play/?${searchParams.toString()}`;
 
+    // Extract Range header (if present) from the incoming request
+    const rangeHeader = req.headers.get("range");
+
+    // Prepare headers for the fetch request
+    const headers = {
+      Accept: "*/*",
+      "User-Agent": "Mozilla/5.0",
+      Cookie: req.headers.get("cookie") || "",  // Forward cookie if it exists
+    };
+
+    // Include Range header if it exists
+    if (rangeHeader) {
+      headers["Range"] = rangeHeader;
+    }
+
     // Fetch the video from TikTok via the proxy
-    const response = await fetch(tikTokUrl, {
+    let response = await fetch(tikTokUrl, {
       method: "GET",
-      headers: {
-        Accept: "*/*",
-        "User-Agent": "Mozilla/5.0",
-        Cookie: req.headers.get("cookie") || "", // Forward cookie if it exists
-      },
+      headers: headers,
       // Set the custom HTTPS proxy agent for routing requests through the proxy
-      agent: agent, // Using the https-proxy-agent
+      agent: agent,  // Using the https-proxy-agent
     });
+
+    // If the request fails with a 416, retry without the Range header
+    if (response.status === 416 && rangeHeader) {
+      console.log("416 error received. Retrying without Range header.");
+      delete headers["Range"]; // Remove Range header
+
+      // Retry the fetch request without the Range header
+      response = await fetch(tikTokUrl, {
+        method: "GET",
+        headers: headers,
+        agent: agent,  // Using the https-proxy-agent
+      });
+    }
 
     // If the fetch fails, handle the response properly
     if (!response.ok) {
@@ -42,6 +66,8 @@ export async function GET(req: Request) {
     return new Response(response.body, {
       headers: {
         "Content-Type": "video/mp4",
+        "Accept-Ranges": "bytes",  // Allow seeking via range requests
+        "Content-Range": response.headers.get("Content-Range") || "",  // Forward Content-Range if present
       },
       status: response.status,
     });
@@ -53,5 +79,3 @@ export async function GET(req: Request) {
     );
   }
 }
-
-

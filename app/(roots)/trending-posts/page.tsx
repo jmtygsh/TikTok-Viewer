@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import {
   Accordion,
@@ -8,230 +8,275 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Input } from "@/app/constant/input";
 
 const Page = () => {
-  const [inputData, setInputData] = useState("");
-  const [loading, setLoading] = useState(false); // State for loading spinner
-  const [data, setData] = useState<any>(null); // Store fetched data
-  const [error, setError] = useState("");
-  const [downloadUrl, setDownloadUrl] = useState(""); // Store generated download URL
-  const [fileName, setFileName] = useState(""); // Store the filename
+  const [resData, setResData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [loadingBtn, setLoadingBtn] = useState(false);
+  const [btnIndex, setBtnIndex] = useState(null);
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      fetchData();
+  const videoRefs = useRef({});
+
+  const fetchData = async (pageToFetch = 1, append = false) => {
+    if (append) {
+      setLoadingMore(true);
+    } else {
+      setLoading(true);
     }
-  };
+    setError(null);
 
-  // Fetch video data from API
-  const fetchData = async () => {
-    if (!inputData) return;
-    setLoading(true);
     try {
-      const response = await fetch(`/api/videodownload?videourl=${inputData}`);
-      const result = await response.json();
+      const response = await fetch(`/api/trendingposts?page=${pageToFetch}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const responseData = await response.json();
 
-      // Handle the video download URL and generate the blob URL
-      const videoUrl = result.data.itemInfo.itemStruct.video.downloadAddr;
-      handleVideoDownload(videoUrl);
-
-      console.log(result);
-
-      setData(result.data.itemInfo.itemStruct); // Save the TikTok item data
-    } catch (error) {
-      console.log("Error fetching data:", error);
-      setError(error);
+      if (append && resData) {
+        setResData({
+          ...responseData,
+          data: {
+            ...responseData.data,
+            itemList: [...resData.data.itemList, ...responseData.data.itemList],
+          },
+        });
+      } else {
+        setResData(responseData);
+      }
+    } catch (err) {
+      setError("Failed to fetch data. Please try again later.");
+      console.error(err);
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   };
 
-  // Function to handle video download and create blob URL
-  const handleVideoDownload = async (videoUrl: string) => {
-    console.log(videoUrl);
-    if (!videoUrl) return;
-
-    try {
-      // Fetch video as a Blob
-      const response = await fetch(videoUrl);
-      const blob = await response.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
-
-      // Extract filename from URL or provide default name
-      const contentDisposition = response.headers.get("Content-Disposition");
-      let filename = contentDisposition
-        ? contentDisposition.split("filename=")[1].replace(/"/g, "")
-        : "tiktok-video.mp4"; // Default filename
-
-      // Extract title part from filename (if available)
-      const titleStart = filename.indexOf("-") + 1;
-      const title = filename.slice(titleStart);
-      if (title) {
-        const sanitizedTitle = title.replace(/[^a-zA-Z0-9]/g, "_");
-        const customFilename = `anoview.com-${sanitizedTitle.slice(0, 10)}.mp4`;
-        setFileName(customFilename);
-      } else {
-        setFileName(filename); // Fallback to default filename
-      }
-
-      // Set the download URL
-      setDownloadUrl(downloadUrl);
-    } catch (error) {
-      console.error("Error processing video download:", error);
+  const loadMore = () => {
+    if (resData?.data?.hasMore) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchData(nextPage, true);
     }
+  };
+
+  const formatVideoUrl = (videoPlay) => {
+    try {
+      const urlParams = new URLSearchParams(videoPlay.split("?")[1]);
+      const params = {
+        faid: urlParams.get("faid") || "",
+        file_id: urlParams.get("file_id") || "",
+        is_play_url: urlParams.get("is_play_url") || "",
+        item_id: urlParams.get("item_id") || "",
+        line: urlParams.get("line") || "",
+        ply_type: urlParams.get("ply_type") || "",
+        signaturev3: urlParams.get("signaturev3") || "",
+        tk: urlParams.get("tk") || "",
+        vidc: urlParams.get("vidc") || "",
+        video_id: urlParams.get("video_id") || "",
+      };
+
+      return `/api/video?${new URLSearchParams(params).toString()}`;
+    } catch (error) {
+      console.error("Error processing video details:", error);
+      return null;
+    }
+  };
+
+  const handlePlayVideo = (currentIndex) => {
+    Object.values(videoRefs.current).forEach((video, index) => {
+      if (index === currentIndex) {
+        if (video.paused) {
+          video.play(); // Play the selected video
+        }
+      } else {
+        video.pause(); // Pause other videos
+      }
+    });
   };
 
   return (
     <div className="mt-20 flex flex-col items-center">
+      {/* title of page  */}
       <div className="mb-8 max-w-4xl">
-        <h1 className="text-2xl font-bold text-center">
-          TikTok Video Downloader
-        </h1>
+        <h1 className="text-2xl font-bold text-center">Get trending posts</h1>
         <p className="text-center mt-4">
-          Download any public videos anonymously with ease using our TikTok
-          video downloader.
+          Watch any TikTok video anonymously by entering the username of a
+          TikTok account to access all videos from your favorite creator.
         </p>
       </div>
 
-      {/* Input System */}
-      <Input
-        placeholder="Enter video link"
-        keypress={handleKeyDown} // Pass keydown handler
-        loading={loading} // Pass loading state
-        submit={fetchData} // Pass function to fetch data
-        onInputChange={setInputData} // Capture input data in parent
-      />
-      <div className="mt-2 mb-8">
-        <p className="text-sm">
-          <i className="hidden md:flex">
-            Give it a try:
-            <span className="text-pink-500">
-              https://www.tiktok.com/@catgivry/video/7225557882765348139
-            </span>
-          </i>
-        </p>
-      </div>
+      <button
+        className="bg-pink-500 hover:bg-pink-600 text-white 
+      font-semibold text-sm 
+      rounded-md transition py-3 px-5"
+        onClick={fetchData}
+      >
+        Show trending posts
+      </button>
 
-      {/* show error  */}
-      <p className="text-sm mb-8">
-        <i className="text-red-500">{error}</i>
-      </p>
-
-      {loading ? (
-        // Show a loading spinner or placeholder
-        <div className="flex justify-center mb-8">
-          <p className="text-red-500">Loading...</p>
+      {loading && (
+        <div className="mt-5 text-center text-blue-500 font-medium text-lg">
+          Loading data, please wait...
         </div>
-      ) : (
-        // Show content when not loading
-        data && (
-          <div className="w-full max-w-2xl rounded-lg p-6">
-            <div className="flex justify-center items-center mb-4">
-              <img
-                src={data.author.avatarThumb}
-                alt="Author Avatar"
-                width={50}
-                height={50}
-                className="rounded-full"
-              />
-              <div className="ml-4">
-                <p className="font-semibold">{data.author.nickname}</p>
-                <p className="text-gray-500">@{data.author.uniqueId}</p>
-              </div>
-            </div>
+      )}
 
-            <div className="w-full md:w-[90%] m-auto">
-              <p>{data.video.downloadAddr}</p>
-              <div className="rounded-md p-4">
-                {data.video.downloadAddr ? (
-                  <div>
-                    <video
-                      controls
-                      className="w-[25rem] m-auto rounded-md"
-                      preload="metadata"
-                      playsInline
-                    >
-                      <source src={data.video.downloadAddr} type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
+      {error && (
+        <div className="mt-5 text-center text-red-500 font-medium text-lg">
+          {error}
+        </div>
+      )}
+
+      <div className="my-10 grid grid-cols-1 sm:grid-cols-2 gap-6 p-5">
+        {resData?.data?.itemList?.map((data, index) => {
+          const videoPlay = data?.video?.bitrateInfo?.[0]?.PlayAddr?.UrlList[2];
+          const proxyVideoUrl = formatVideoUrl(videoPlay);
+
+          return (
+            <div
+              key={index}
+              className="p-4 rounded-lg shadow-md border border-gray-200 bg-white flex flex-col"
+            >
+              <div className="flex items-center gap-4">
+                <img
+                  src={data?.author?.avatarLarger || "/assets/logo.webp"}
+                  alt={`${data?.author?.uniqueId || "User"}'s avatar`}
+                  width={60}
+                  height={60}
+                  className="rounded-full object-cover"
+                />
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="text-base sm:text-lg font-semibold">
+                      @{data?.author?.uniqueId || "Unknown"}
+                    </p>
+                    <p className="text-xs">
+                      {data?.author?.verified ? (
+                        <Image
+                          src="/assets/checklist.webp"
+                          alt="Verified"
+                          width={16}
+                          height={16}
+                          className="inline-block"
+                        />
+                      ) : (
+                        <Image
+                          src="/assets/remove.webp"
+                          alt="Not Verified"
+                          width={16}
+                          height={16}
+                          className="inline-block"
+                        />
+                      )}
+                    </p>
                   </div>
-                ) : (
-                  <p className="text-red-500 text-center">No video available</p>
-                )}
-
-                <div className="text-gray-700 flex mt-12 flex-wrap gap-4 justify-center">
-                  <p>
-                    <span className="font-bold">Views:</span>
-                    {data.stats.playCount.toLocaleString()}
-                  </p>
-                  <p>
-                    <span className="font-bold">Likes:</span>
-                    {data.stats.diggCount.toLocaleString()}
-                  </p>
-                  <p>
-                    <span className="font-bold">Comments:</span>
-                    {data.stats.commentCount.toLocaleString()}
-                  </p>
-                  <p>
-                    <span className="font-bold">Shares:</span>
-                    {data.stats.shareCount.toLocaleString()}
-                  </p>
-                  <p>
-                    <span className="font-bold">Saves:</span>
-                    {data.stats.collectCount.toLocaleString()}
+                  <p className="text-gray-500 text-sm">
+                    {data?.author?.signature || "No bio available"}
                   </p>
                 </div>
+              </div>
 
-                <div className="mt-8 flex justify-center">
-                  {data.video.downloadAddr ? (
+              <div className="mt-4">
+                <p className="text-gray-700 font-medium text-sm sm:text-base">
+                  {data?.desc || "No Description"}
+                </p>
+              </div>
+
+              <div className="mt-4 flex flex-wrap gap-3 text-sm text-gray-600">
+                <p>Likes: {data?.stats?.diggCount || 0}</p>
+                <p>Views: {data?.stats?.playCount || 0}</p>
+                <p>Comments: {data?.stats?.commentCount || 0}</p>
+                <p>Shares: {data?.stats?.shareCount || 0}</p>
+                <p>Saves: {data?.stats?.collectCount || 0}</p>
+              </div>
+
+              <div className="mt-4 flex flex-wrap gap-2">
+                {data?.textExtra?.map((hashtag, idx) => (
+                  <span
+                    key={idx}
+                    className="bg-blue-100 text-blue-500 px-2 py-1 rounded-full text-xs font-medium"
+                  >
+                    #{hashtag?.hashtagName}
+                  </span>
+                ))}
+              </div>
+
+              <div className="mt-6">
+                {proxyVideoUrl ? (
+                  <div>
+                    <video
+                      ref={(el) => (videoRefs.current[index] = el)}
+                      controls
+                      onPlay={() => handlePlayVideo(index)}
+                      className="rounded-md w-full h-48 sm:h-60 lg:h-64 object-cover bg-black"
+                    >
+                      <source src={proxyVideoUrl} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
                     <a
-                      className="bg-pink-600 w-full text-white 
-                    px-3 py-2 rounded-md outline-none text-center
-                     flex justify-center gap-2 items-center"
-                      href={downloadUrl}
-                      download={fileName}
+                      href={proxyVideoUrl}
+                      download={`${data.desc.substring(0, 20)}-anoview.com.mp4`}
+                      onClick={(e) => {
+                        setBtnIndex(index); // Set the current button index
+                        setLoadingBtn(true); // Show loading indicator
+                      }}
+                      onMouseUp={() =>
+                        setTimeout(() => setLoadingBtn(false), 3000)
+                      }
+                      className={`mt-4 inline-flex items-center justify-center gap-2 px-4 py-2 ${
+                        loadingBtn && btnIndex === index
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-pink-500 hover:bg-pink-600"
+                      } text-white font-semibold text-sm rounded-md transition`}
+                      disabled={loadingBtn && btnIndex === index}
                     >
                       <Image
                         src="/assets/cloud-download.webp"
-                        alt="download now"
+                        alt="Download"
                         width={20}
-                        height={10}
+                        height={20}
                       />
-                      Download Now
+                      {btnIndex === index && loadingBtn
+                        ? "Downloading..."
+                        : "Download Now"}
                     </a>
-                  ) : (
-                    <a
-                      className="bg-red-600 w-full text-white 
-                  px-3 py-2 rounded-md outline-none text-center
-                   flex justify-center gap-2 items-center"
-                    >
-                      <Image
-                        src="/assets/logo.webp"
-                        alt="download now"
-                        width={20}
-                        height={10}
-                      />
-                      Not Available
-                    </a>
-                  )}
-                </div>
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-sm">
+                    Video not available for download.
+                  </p>
+                )}
               </div>
             </div>
-          </div>
-        )
+          );
+        })}
+      </div>
+
+      {resData?.data?.hasMore && (
+        <div className="mt-8 text-center">
+          <button
+            onClick={loadMore}
+            disabled={loadingMore}
+            className="px-7 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-md font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
+          >
+            {loadingMore ? "Loading more..." : "Load More"}
+          </button>
+        </div>
       )}
 
       {/* related topic*/}
-      <div className="text-center mb-8">
+      <div className="text-center my-8">
         <h3 className="mb-4 text-lg font-semibold">Related TikTok Tools</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Card */}
-          <a href="/anonymous-tiktok-viewer">
+          <a href="/tiktok-video-downloader">
             <div className="flex items-center p-4 border border-red-300 shadow-sm rounded-md bg-white cursor-pointer hover:shadow-md transition-shadow duration-300">
               <div className="flex-shrink-0 mr-4">
                 <img
-                  src="assets/video.png"
+                  src="assets/download-red.png"
                   alt="demo"
                   width={30}
                   height={30}
@@ -239,7 +284,7 @@ const Page = () => {
                 />
               </div>
               <div className="flex justify-between items-center w-full">
-                <p className="font-medium text-sm">Anonymous TikTok Viewer</p>
+                <p className="font-medium text-sm">TikTok Video Downloader</p>
                 <img
                   src="assets/r-arrow.png"
                   alt="click here"
@@ -515,4 +560,3 @@ const Page = () => {
 };
 
 export default Page;
-

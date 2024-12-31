@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import {
   Accordion,
@@ -8,6 +8,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+
+import { Input } from "@/app/constant/input";
 
 interface Hashtag {
   hashtagName?: string;
@@ -72,18 +74,13 @@ const Page = () => {
   const [inputData, setInputData] = useState(""); // Store username input
   const [show, setShow] = useState(false); // State to control rendering of data
   const [loading, setLoading] = useState(false); // State for loading spinner
+  const [loadingBtn, setLoadingBtn] = useState(false); // State for loading spinner for unique download button
+  const [btnIndex, setBtnIndex] = useState(null); // download button index number store for unique "Downloading.." loading
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [error, setError] = useState("");
 
-  // Function to get or generate a unique client ID
-  const getClientId = () => {
-    let clientId = sessionStorage.getItem("client-id");
-    if (!clientId) {
-      clientId = Date.now().toString(); // Generate a unique ID
-      sessionStorage.setItem("client-id", clientId);
-    }
-    return clientId;
-  };
+
 
   const fetchData = async (cursor?: string, isLoadMore = false) => {
     if (isLoadMore) {
@@ -93,39 +90,26 @@ const Page = () => {
     }
 
     try {
-      const clientId = getClientId();
       if (!inputData && !isLoadMore) {
         console.warn("Username is empty.");
         return;
       }
 
-      let username;
-      if (!inputData) {
-        username = sessionStorage.getItem("username");
-      } else {
-        username = inputData;
-      }
-
-      console.log(`username 1: ${username}`);
-      console.log(`client ID 1: ${clientId}`);
+      console.log(`username: ${inputData}`);
 
       setLoading(true); // Start loading
 
       const baseEndPoint = process.env.NEXT_PUBLIC_BASE_URL;
 
       const response = await fetch(
-        `${baseEndPoint}/api/view?client_id=${clientId}&username=${username}${
+        `${baseEndPoint}/api/view?username=${inputData}${
           cursor ? `&cursor=${cursor}` : ""
         }`
       );
       const data = await response.json();
-
-      console.log(data);
-
       if (response.ok) {
         if (!isLoadMore) {
           setShow(true);
-          sessionStorage.setItem("username", username);
           setTtData(data); // Initial data load
         } else {
           // Append new data for "Load More"
@@ -147,7 +131,7 @@ const Page = () => {
         }
         setNextCursor(data.data.nextCursor || null); // Update cursor
       } else {
-        console.log("Failed to fetch data");
+        setError("Error fetching data");
       }
     } catch (e) {
       console.log("Error fetching data:", e); // Log any errors
@@ -164,36 +148,6 @@ const Page = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchDataFromSession = async () => {
-      const clientId = sessionStorage.getItem("client-id");
-      const username = sessionStorage.getItem("username");
-
-      console.log(`username : ${username}`);
-      console.log(`client ID : ${clientId}`);
-
-      if (!clientId || !username) {
-        setShow(false);
-        return;
-      }
-
-      try {
-        const baseEndPoint = process.env.NEXT_PUBLIC_BASE_URL;
-        const response = await fetch(
-          `${baseEndPoint}/api/view?client_id=${clientId}&username=${username}`
-        );
-        const data = await response.json();
-        setTtData(data);
-        setShow(true);
-        setNextCursor(data.data?.authorPostData?.cursor || null); // Initialize cursor from session data
-      } catch (e) {
-        console.log("Error fetching data from session:", e);
-      }
-    };
-
-    fetchDataFromSession();
-  }, []); // Empty dependency array to run only once when the component mounts
-
   const user = ttData?.data?.authorData?.userInfo?.user;
   const stats = ttData?.data?.authorData?.userInfo?.stats;
 
@@ -207,16 +161,19 @@ const Page = () => {
           .filter((hashtagName: string) => hashtagName !== "") // Remove empty strings
     ) || [];
 
+  // count the how many same hashtags appear
   const counts: Record<string, number> = {}; // Declare counts object with string keys and number values
   for (const item of hashtags) {
     counts[item] = (counts[item] || 0) + 1; // Increment count or initialize to 1
   }
 
+  // filter needed only from response
   const videoDetails: VideoDetail[] =
     ttData?.data?.authorPostData?.itemList?.map((vDetail: any) => {
       // Ensure safe access to video play URL
       let videoPlay =
         vDetail?.video?.bitrateInfo?.[0]?.PlayAddr?.UrlList?.[2] || "";
+
       // If there is no valid URL, return empty video URL
       if (!videoPlay) {
         return {
@@ -233,6 +190,8 @@ const Page = () => {
           engageRate: 0,
         };
       }
+
+      let videoDes = vDetail.desc;
 
       // Extract query parameters from the URL, ensure URL is valid
       try {
@@ -292,6 +251,8 @@ const Page = () => {
 
         return {
           videos: videoUrl, // Use the proxied video URL
+          videoDes: videoDes,
+          originalVideoUrl : videoPlay,
           videoCover: videoCover,
           views: videoView,
           likes: videoLike,
@@ -321,66 +282,56 @@ const Page = () => {
       }
     }) || [];
 
-  console.log(ttData);
-
-  console.log(`nextCursor : ${nextCursor}`);
+   //play video one at a time
+   const videoRefs = useRef({});
+   const handlePlayVideo = (currentIndex) => {
+    Object.values(videoRefs.current).forEach((video, index) => {
+      if (index === currentIndex) {
+        if (video.paused) {
+          video.play(); // Play the selected video
+        }
+      } else {
+        video.pause(); // Pause other videos
+      }
+    });
+  };
 
   return (
     <div className="mt-20 flex flex-col items-center">
       {/* title of page  */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 text-center">
+      <div className="mb-8 max-w-4xl">
+        <h1 className="text-2xl font-bold text-center">
           Anonymous TikTok Viewer
         </h1>
-        <p className="text-gray-600 text-center mt-2">
-          Watch any public videos anonymously with ease using our viewer.
+        <p className="text-center mt-4">
+          Watch any TikTok video anonymously by entering the username of a
+          TikTok account to access all videos from your favorite creator.
         </p>
       </div>
 
       {/* Input System */}
-      <div className="relative flex items-center w-11/12 max-w-2xl mb-8">
-        <div className="absolute left-3 flex items-center">
-          <Image
-            src="/assets/tik-tok.webp"
-            alt="Anoview Search Logo"
-            width={20}
-            height={20}
-          />
-        </div>
-        <span className="absolute left-9 text-gray-300">|</span>
-        <span className="absolute left-12 text-gray-500 text-base">@</span>
-        <input
-          type="text"
-          placeholder="Enter username"
-          className="w-full pl-16 pr-[90px] py-3 border border-gray-300 rounded-lg focus:outline-none text-gray-800"
-          onChange={(e) => setInputData(e.target.value)}
-          onKeyDown={handleKeyDown} // Add event listener for the Enter key
-        />
-        <button
-          onClick={fetchData}
-          disabled={!inputData || loading} // Disable button while loading
-          className={`absolute right-3 px-6 py-2 rounded-lg text-white font-semibold ${
-            inputData && !loading
-              ? "bg-blue-200 hover:bg-blue-300"
-              : "bg-gray-100"
-          }`}
-        >
-          {loading ? (
-            <div className="w-5 h-5 border-4 border-t-4 border-black border-solid rounded-full animate-spin">
-              i
-            </div> // Loading spinner
-          ) : (
-            <Image
-              src="/assets/search.webp"
-              alt="Anoview Search Logo"
-              width={20}
-              height={20}
-            />
-          )}
-        </button>
+      <Input
+        placeholder="Enter username"
+        keypress={handleKeyDown} // Pass keydown handler
+        loading={loading} // Pass loading state
+        submit={fetchData} // Pass function to fetch data
+        onInputChange={setInputData} // Capture input data in parent
+      />
+      <div className="mt-2 mb-8">
+        <p className="text-sm">
+          <i>
+            Give it a try: <span className="text-pink-500">@mrbeast</span>,{" "}
+            <span className="text-pink-500">@khaby.lame</span>
+          </i>
+        </p>
       </div>
 
-      {/* User Info Display */}
+      {/* show error  */}
+      <p className={`text-sm ${!show ? "mb-16" : ""}`}>
+        <i className="text-red-500">{error}</i>
+      </p>
+
+      {/* User Info Display if data available or hide*/}
       {show && ttData?.data?.authorData?.userInfo?.user && (
         <div className="text-center rounded-lg p-6 max-w-xl mx-auto mb-8">
           <div className="flex flex-col items-center">
@@ -431,7 +382,7 @@ const Page = () => {
         </div>
       )}
 
-      {/* Stats Display */}
+      {/* Stats Display if data available or hide*/}
       {show && stats && (
         <div className="p-4 m-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 text-center text-sm text-gray-700 mb-8">
@@ -468,6 +419,7 @@ const Page = () => {
               </p>
             </div>
           </div>
+
           <div className="flex flex-col md:flex-row justify-center mb-8">
             <div className="p-4 w-full md:w-[48%]">
               <h2 className="font-extrabold text-gray-700 mb-4 border-b-2">
@@ -509,34 +461,40 @@ const Page = () => {
               >
                 {video.videos ? (
                   <div key={video.videos}>
+            
                     <video
+                      ref={(el) => (videoRefs.current[index] = el)}
                       controls
-                      // poster={video.videoCover}
                       className="w-full rounded-md"
-                      preload="metadata"
-                      playsInline
+                      onPlay={() => handlePlayVideo(index)}
+                      className="rounded-md w-full h-48 sm:h-60 lg:h-64 object-cover bg-black"
                     >
                       <source src={video.videos} type="video/mp4" />
                       Your browser does not support the video tag.
                     </video>
-
-                    <div className="mt-4 flex justify-center">
-                      <a
-                        className="w-full bg-pink-400 
-                        px-3 py-2 rounded-md outline-none text-center
-                         flex justify-center gap-2 items-center"
-                        href={video.videos}
-                        download="video.mp4"
-                      >
-                        <Image
-                          src="/assets/cloud-download.webp"
-                          alt="download now"
-                          width={20}
-                          height={10}
-                        />
-                        Download Now
-                      </a>
-                    </div>
+                   
+                    <a
+                      className="w-full bg-pink-400 px-3 py-2 rounded-md outline-none text-center flex justify-center gap-2 items-center mt-2"
+                      href={video.videos}
+                      download={`${video.videoDes.substring(
+                        0,
+                        20
+                      )}-anoview.com.mp4`} // Dynamically set the filename with .mp4 extension
+                      onClick={(e) => (setBtnIndex(index), setLoadingBtn(true))} // Set loading state when clicked
+                      onMouseUp={() =>
+                        setTimeout(() => setLoadingBtn(false), 3000)
+                      } // Simulate loading end after download starts
+                    >
+                      <Image
+                        src="/assets/cloud-download.webp"
+                        alt="download now"
+                        width={20}
+                        height={10}
+                      />
+                      {btnIndex === index && loadingBtn
+                        ? "Downloading..."
+                        : "Download Now"}
+                    </a>
 
                     <div className="mt-2 flex justify-center text-gray-700 text-center bg-green-400 rounded-md p-2">
                       <p>Engagement Rate:</p>
@@ -572,6 +530,10 @@ const Page = () => {
                   </p>
                 </div>
 
+                <div className="mt-4 text-gray-700 text-center">
+                  <p>{video.videoDes}</p>
+                </div>
+
                 <div className="mt-4 text-gray-700">
                   <p className="text-center">
                     <span className="font-bold">Hashtag Count:</span>
@@ -605,12 +567,94 @@ const Page = () => {
         </div>
       )}
 
-      <div className="mx-auto mt-20 p-6 bg-white">
+      {/* related topic*/}
+      <div className="text-center mb-8">
+        <h3 className="mb-4 text-lg font-semibold">Related TikTok Tools</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Card */}
+          <a href="/tiktok-video-downloader">
+            <div className="flex items-center p-4 border border-red-300 shadow-sm rounded-md bg-white cursor-pointer hover:shadow-md transition-shadow duration-300">
+              <div className="flex-shrink-0 mr-4">
+                <img
+                  src="assets/download-red.png"
+                  alt="demo"
+                  width={30}
+                  height={30}
+                  className="rounded-full"
+                />
+              </div>
+              <div className="flex justify-between items-center w-full">
+                <p className="font-medium text-sm">TikTok Video Downloader</p>
+                <img
+                  src="assets/r-arrow.png"
+                  alt="click here"
+                  width={20}
+                  height={20}
+                  className="ml-4"
+                />
+              </div>
+            </div>
+          </a>
+
+          {/* Card */}
+          <a href="#download">
+            <div className="flex items-center p-4 border border-red-300 shadow-sm rounded-md bg-white cursor-pointer hover:shadow-md transition-shadow duration-300">
+              <div className="flex-shrink-0 mr-4">
+                <img
+                  src="assets/cloud-download.webp"
+                  alt="demo"
+                  width={30}
+                  height={30}
+                  className="rounded-full"
+                />
+              </div>
+              <div className="flex justify-between items-center w-full">
+                <p className="font-medium text-sm">TikTok Video Downloader</p>
+                <img
+                  src="assets/r-arrow.png"
+                  alt="click here"
+                  width={20}
+                  height={20}
+                  className="ml-4"
+                />
+              </div>
+            </div>
+          </a>
+
+          {/* Card */}
+          <a href="#downlad">
+            <div className="flex items-center p-4 border border-red-300 shadow-sm rounded-md bg-white cursor-pointer hover:shadow-md transition-shadow duration-300">
+              <div className="flex-shrink-0 mr-4">
+                <img
+                  src="assets/cloud-download.webp"
+                  alt="demo"
+                  width={30}
+                  height={30}
+                  className="rounded-full"
+                />
+              </div>
+              <div className="flex justify-between items-center w-full">
+                <p className="font-medium text-sm">TikTok Video Downloader</p>
+                <img
+                  src="assets/r-arrow.png"
+                  alt="click here"
+                  width={20}
+                  height={20}
+                  className="ml-4"
+                />
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      {/* peragraphs  */}
+      <div className="mx-auto mt-20 p-6 bg-black text-white">
         <div className="mb-10">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">
+          <h2 className="text-xl font-bold mb-4">
             How to use Anonymous TikTok Viewer
           </h2>
-          <ol className="list-decimal ml-8 text-gray-700 leading-relaxed space-y-3">
+          <ol className="list-decimal ml-8 leading-relaxed space-y-3">
             <li>
               <strong className="font-semibold"></strong> Enter your favorite
               creator's username (not url) in the input box and press{" "}
@@ -645,13 +689,12 @@ const Page = () => {
               <img
                 src="assets/anonymous.png"
                 alt="Fully Anonymous"
-                className="w-8 h-8"
+                className="w-8 h-8 filter invert"
               />
+
               <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                  Fully Anonymous
-                </h3>
-                <p className="text-gray-600">
+                <h3 className="text-lg font-semibold mb-2">Fully Anonymous</h3>
+                <p>
                   Your browsing history, profile views, and downloads are{" "}
                   <strong>not saved</strong>.
                 </p>
@@ -663,13 +706,11 @@ const Page = () => {
               <img
                 src="assets/watermark-download.png"
                 alt="No Watermark"
-                className="w-8 h-8"
+                className="w-8 h-8 filter invert"
               />
               <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                  No Watermark
-                </h3>
-                <p className="text-gray-600">
+                <h3 className="text-lg font-semibold mb-2">No Watermark</h3>
+                <p>
                   Download videos directly from TikTok without the annoying
                   watermark.
                 </p>
@@ -681,13 +722,11 @@ const Page = () => {
               <img
                 src="assets/no-registration.png"
                 alt="No Registration"
-                className="w-8 h-8"
+                className="w-8 h-8 filter invert"
               />
               <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                  No Registration
-                </h3>
-                <p className="text-gray-600">
+                <h3 className="text-lg font-semibold mb-2">No Registration</h3>
+                <p>
                   No need to create an account, log in, or install any apps.
                   It’s completely hassle-free.
                 </p>
@@ -699,13 +738,11 @@ const Page = () => {
               <img
                 src="assets/hd-quality.png"
                 alt="HD Quality"
-                className="w-8 h-8"
+                className="w-8 h-8 filter invert"
               />
               <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                  HD Quality
-                </h3>
-                <p className="text-gray-600">
+                <h3 className="text-lg font-semibold mb-2">HD Quality</h3>
+                <p>
                   Enjoy videos in their original full resolution, viewable and
                   savable on any device.
                 </p>
@@ -713,7 +750,11 @@ const Page = () => {
             </div>
           </div>
         </div>
-        <Accordion type="single" collapsible className="w-full bg-green-300 p-10 rounded-md">
+        <Accordion
+          type="single"
+          collapsible
+          className="w-full bg-white text-black p-10 rounded-md"
+        >
           <AccordionItem value="item-1">
             <AccordionTrigger className="text-base">
               1.Can I use the tool to view private TikTok accounts?
@@ -819,6 +860,3 @@ const Page = () => {
 };
 
 export default Page;
-
-
-// 1732592309739

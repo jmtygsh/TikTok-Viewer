@@ -13,6 +13,8 @@ export async function GET(req: Request) {
     });
   }
 
+  console.log(videoUrl)
+
   // Extract the video ID using a regular expression
   const videoIdMatch = videoUrl.match(/video\/(\d+)/); // Match 'video/123456' pattern
   const videoId = videoIdMatch ? videoIdMatch[1] : null;
