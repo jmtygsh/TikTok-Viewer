@@ -52,7 +52,7 @@ export default function Home() {
     }
   };
 
-  console.log(searchResults)
+  console.log(searchResults);
 
   return (
     <div className="mt-20 flex flex-col items-center">
@@ -100,21 +100,21 @@ export default function Home() {
         <h3 className="mb-4 text-lg font-semibold">Related TikTok Tools</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Card */}
-          <a href="/tiktok-video-downloader">
+          <a href="/anonymous-tiktok-viewer">
             <div className="flex items-center p-4 border border-red-300 shadow-sm rounded-md bg-white cursor-pointer hover:shadow-md transition-shadow duration-300">
               <div className="flex-shrink-0 mr-4">
                 <img
-                  src="assets/download-red.png"
-                  alt="demo"
-                  width={30}
-                  height={30}
+                  src="/assets/eye-regular.svg"
+                  alt="Anonymous Tiktok Viewer"
+                  width={24}
+                  height={24}
                   className="rounded-full"
                 />
               </div>
               <div className="flex justify-between items-center w-full">
-                <p className="font-medium text-sm">TikTok Video Downloader</p>
+                <p className="font-medium text-sm">Anonymous Tiktok Viewer</p>
                 <img
-                  src="assets/r-arrow.png"
+                  src="/assets/r-arrow.png"
                   alt="click here"
                   width={20}
                   height={20}
@@ -123,14 +123,58 @@ export default function Home() {
               </div>
             </div>
           </a>
-          {/* Add more cards here */}
+
+          <a href="/tiktok-video-downloader">
+            <div className="flex items-center p-4 border border-red-300 shadow-sm rounded-md bg-white cursor-pointer hover:shadow-md transition-shadow duration-300">
+              <div className="flex-shrink-0 mr-4">
+                <img
+                  src="/assets/circle-down-regular.svg"
+                  alt="tiktok video downloader"
+                  width={22}
+                  height={22}
+                  className="rounded-full"
+                />
+              </div>
+              <div className="flex justify-between items-center w-full">
+                <p className="font-medium text-sm">TikTok Video Downloader</p>
+                <img
+                  src="/assets/r-arrow.png"
+                  alt="click here"
+                  width={20}
+                  height={20}
+                  className="ml-4"
+                />
+              </div>
+            </div>
+          </a>
+
+          <a href="/trending-posts">
+            <div className="flex items-center p-4 border border-red-300 shadow-sm rounded-md bg-white cursor-pointer hover:shadow-md transition-shadow duration-300">
+              <div className="flex-shrink-0 mr-4">
+                <img
+                  src="/assets/hashtag-solid.svg"
+                  alt="trending post"
+                  width={20}
+                  height={20}
+                  className="rounded-full"
+                />
+              </div>
+              <div className="flex justify-between items-center w-full">
+                <p className="font-medium text-sm">Trending Posts</p>
+                <img
+                  src="/assets/r-arrow.png"
+                  alt="click here"
+                  width={20}
+                  height={20}
+                  className="ml-4"
+                />
+              </div>
+            </div>
+          </a>
         </div>
       </div>
 
-      {/* Help Section */}
-      <div className="mx-auto mt-20 p-6 bg-black text-white">
-        {/* Content */}
-      </div>
+
     </div>
   );
 }

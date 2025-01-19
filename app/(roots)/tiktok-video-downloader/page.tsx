@@ -222,7 +222,7 @@ const Page = () => {
         )
       )}
 
-      {/* related topic*/}
+      {/* Related topic*/}
       <div className="text-center mb-8">
         <h3 className="mb-4 text-lg font-semibold">Related TikTok Tools</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -231,17 +231,17 @@ const Page = () => {
             <div className="flex items-center p-4 border border-red-300 shadow-sm rounded-md bg-white cursor-pointer hover:shadow-md transition-shadow duration-300">
               <div className="flex-shrink-0 mr-4">
                 <img
-                  src="assets/video.png"
-                  alt="demo"
-                  width={30}
-                  height={30}
+                  src="/assets/eye-regular.svg"
+                  alt="Anonymous Tiktok Viewer"
+                  width={24}
+                  height={24}
                   className="rounded-full"
                 />
               </div>
               <div className="flex justify-between items-center w-full">
-                <p className="font-medium text-sm">Anonymous TikTok Viewer</p>
+                <p className="font-medium text-sm">Anonymous Tiktok Viewer</p>
                 <img
-                  src="assets/r-arrow.png"
+                  src="/assets/r-arrow.png"
                   alt="click here"
                   width={20}
                   height={20}
@@ -251,22 +251,21 @@ const Page = () => {
             </div>
           </a>
 
-          {/* Card */}
-          <a href="#download">
+          <a href="/tiktok-video-downloader">
             <div className="flex items-center p-4 border border-red-300 shadow-sm rounded-md bg-white cursor-pointer hover:shadow-md transition-shadow duration-300">
               <div className="flex-shrink-0 mr-4">
                 <img
-                  src="assets/cloud-download.webp"
-                  alt="demo"
-                  width={30}
-                  height={30}
+                  src="/assets/circle-down-regular.svg"
+                  alt="tiktok video downloader"
+                  width={22}
+                  height={22}
                   className="rounded-full"
                 />
               </div>
               <div className="flex justify-between items-center w-full">
                 <p className="font-medium text-sm">TikTok Video Downloader</p>
                 <img
-                  src="assets/r-arrow.png"
+                  src="/assets/r-arrow.png"
                   alt="click here"
                   width={20}
                   height={20}
@@ -276,22 +275,21 @@ const Page = () => {
             </div>
           </a>
 
-          {/* Card */}
-          <a href="#downlad">
+          <a href="/trending-posts">
             <div className="flex items-center p-4 border border-red-300 shadow-sm rounded-md bg-white cursor-pointer hover:shadow-md transition-shadow duration-300">
               <div className="flex-shrink-0 mr-4">
                 <img
-                  src="assets/cloud-download.webp"
-                  alt="demo"
-                  width={30}
-                  height={30}
+                  src="/assets/hashtag-solid.svg"
+                  alt="trending post"
+                  width={20}
+                  height={20}
                   className="rounded-full"
                 />
               </div>
               <div className="flex justify-between items-center w-full">
-                <p className="font-medium text-sm">TikTok Video Downloader</p>
+                <p className="font-medium text-sm">Trending Posts</p>
                 <img
-                  src="assets/r-arrow.png"
+                  src="/assets/r-arrow.png"
                   alt="click here"
                   width={20}
                   height={20}
@@ -304,208 +302,160 @@ const Page = () => {
       </div>
 
       {/* peragraphs  */}
-      <div className="mx-auto mt-20 p-6 bg-black text-white">
+      <div className="mx-auto mt-20 p-6 bg-white text-black w-full">
         <div className="mb-10">
           <h2 className="text-xl font-bold mb-4">
-            How to use Anonymous TikTok Viewer
+            How to Download TikTok Video
           </h2>
           <ol className="list-decimal ml-8 leading-relaxed space-y-3">
             <li>
-              <strong className="font-semibold"></strong> Enter your favorite
-              creator's username (not url) in the input box and press{" "}
-              <strong className="font-semibold">Enter</strong>.
+              <strong>Locate the TikTok Video:</strong> Open the TikTok app or
+              visit the TikTok website to find the video you want to download.
+              Make sure it’s the exact video you wish to save, and ensure it’s
+              publicly accessible.
             </li>
             <li>
-              <strong className="font-semibold"></strong> Wait for the data to
-              load. Once ready, you’ll see video details like{" "}
-              <strong className="font-semibold">likes</strong>,{" "}
-              <strong className="font-semibold">views</strong>, and more. You
-              can also download videos directly.
+              <strong>Copy the Video Link:</strong> Once you've selected the
+              video, tap the <em>"Share"</em> button. This button is represented
+              by an arrow icon located at the bottom right or near the top of
+              the video. From the sharing options, select <em>"Copy Link."</em>{" "}
+              This will copy the unique URL of the video to your clipboard.
             </li>
             <li>
-              <strong className="font-semibold"></strong> Each page initially
-              loads 10 videos To view more, click the
-              <strong className="font-semibold">"Load More"</strong> button. If
-              you want to download videos using URLs, visit our
-              <a
-                href="/tiktok-video-downloader"
-                className="text-blue-500 hover:text-blue-700 font-medium ml-1 underline"
-              >
-                TikTok Video Downloader
-              </a>
-              .
+              <strong>Go to the TikTok Video Downloader:</strong> Open your
+              browser and visit <em>anoview.com</em>. Once on the site, navigate
+              to the TikTok video downloader tool.
+            </li>
+            <li>
+              <strong>Paste the Link:</strong> In the input field provided on
+              the downloader page, paste the link you copied earlier. You can do
+              this by right-clicking (on desktop) and selecting <em>"Paste"</em>{" "}
+              or tapping and holding (on mobile) to bring up the paste option.
+            </li>
+            <li>
+              <strong>Start the Download Process:</strong> After pasting the
+              link, press the <em>"Enter"</em> key or click the download button
+              on the site. The downloader will process the link and fetch the
+              video for download.
+            </li>
+            <li>
+              <strong>Choose Your Download Option:</strong> Once the video is
+              fetched, you’ll see download options, which may include
+              downloading with or without a watermark. Select your preferred
+              option and click the download button to save the video.
+            </li>
+            <li>
+              <strong>Access Your Downloaded Video:</strong> After the download
+              is complete, the video will be saved to your device. By default,
+              it’s usually located in your browser’s <em>"Downloads"</em> folder
+              unless you’ve specified a different destination. You can now enjoy
+              or share your saved TikTok video anytime!
             </li>
           </ol>
         </div>
-        <div className="mb-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Fully Anonymous */}
-            <div className="flex items-center gap-4">
-              <img
-                src="assets/anonymous.png"
-                alt="Fully Anonymous"
-                className="w-8 h-8 filter invert"
-              />
 
-              <div>
-                <h3 className="text-lg font-semibold mb-2">Fully Anonymous</h3>
-                <p>
-                  Your browsing history, profile views, and downloads are{" "}
-                  <strong>not saved</strong>.
-                </p>
-              </div>
-            </div>
-
-            {/* No Watermark */}
-            <div className="flex items-center gap-4">
-              <img
-                src="assets/watermark-download.png"
-                alt="No Watermark"
-                className="w-8 h-8 filter invert"
-              />
-              <div>
-                <h3 className="text-lg font-semibold mb-2">No Watermark</h3>
-                <p>
-                  Download videos directly from TikTok without the annoying
-                  watermark.
-                </p>
-              </div>
-            </div>
-
-            {/* No Registration */}
-            <div className="flex items-center gap-4">
-              <img
-                src="assets/no-registration.png"
-                alt="No Registration"
-                className="w-8 h-8 filter invert"
-              />
-              <div>
-                <h3 className="text-lg font-semibold mb-2">No Registration</h3>
-                <p>
-                  No need to create an account, log in, or install any apps.
-                  It’s completely hassle-free.
-                </p>
-              </div>
-            </div>
-
-            {/* HD Quality */}
-            <div className="flex items-center gap-4">
-              <img
-                src="assets/hd-quality.png"
-                alt="HD Quality"
-                className="w-8 h-8 filter invert"
-              />
-              <div>
-                <h3 className="text-lg font-semibold mb-2">HD Quality</h3>
-                <p>
-                  Enjoy videos in their original full resolution, viewable and
-                  savable on any device.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
         <Accordion
           type="single"
           collapsible
-          className="w-full bg-white text-black p-10 rounded-md"
+          className="w-full bg-[#FFF5F5] text-black p-10 rounded-md shadow-sm border"
         >
           <AccordionItem value="item-1">
             <AccordionTrigger className="text-base">
-              1.Can I use the tool to view private TikTok accounts?
+              1. Is there a limit on downloading TikTok videos?
             </AccordionTrigger>
             <AccordionContent className="text-sm">
-              No, our tool only allows viewing of publicly available TikTok
-              videos and data. We respect user privacy and do not bypass
-              TikTok's security settings.
+              There is currently no limit on downloading videos; you can
+              download them without a watermark. However, some videos still do
+              have watermarks. In the future, the goal is to transition to an
+              entirely watermark-free experience.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-2">
             <AccordionTrigger className="text-base">
-              2.Will anyone know that I’ve viewed or downloaded their TikTok
-              video?
+              2. Where are my video files saved after I download them?
             </AccordionTrigger>
             <AccordionContent className="text-sm">
-              Absolutely not. This tool ensures complete anonymity. Your
-              activity is not logged, and there’s no trace left for the TikTok
-              user.
+              When you download a TikTok video, it typically saves in the
+              Downloads folder. To change this, you can adjust your browser
+              settings to manually choose the destination folder for your files.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-3">
             <AccordionTrigger className="text-base">
-              3.Why do I need to load more posts manually?
+              3. How do I download TikTok videos on my phone?
             </AccordionTrigger>
             <AccordionContent className="text-sm">
-              To optimize performance and load times, we display 10 videos per
-              page by default. The "Load More" button lets you control how much
-              content you want to explore at any time.
+              TikTok videos can be downloaded using your browser. Simply copy
+              the video link from the TikTok app, paste it into the downloader,
+              and follow the instructions. Ensure your browser allows downloads
+              to proceed smoothly.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-4">
             <AccordionTrigger className="text-base">
-              4.Can I use this tool on mobile devices?
+              4. Can I download TikTok videos without an account?
             </AccordionTrigger>
             <AccordionContent className="text-sm">
-              Yes, the tool is fully responsive and works seamlessly on mobile
-              devices, tablets, and desktops. Whether you're on the go or at
-              home, you can access it effortlessly.
+              Yes, you don’t need a TikTok account to download videos. Simply
+              paste the video link into the downloader and proceed with the
+              download.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-5">
             <AccordionTrigger className="text-base">
-              5.What formats are available for downloaded videos?
+              5. Do downloaded TikTok videos retain their original quality?
             </AccordionTrigger>
             <AccordionContent className="text-sm">
-              Videos are downloaded in their original format (usually MP4) with
-              the highest resolution available, ensuring quality preservation.
+              Yes, videos are downloaded in the best quality available based on
+              the source video. However, downloading without a watermark might
+              slightly alter the resolution in rare cases.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-6">
             <AccordionTrigger className="text-base">
-              6.Is there a limit to how many videos I can view or download?
+              6. Is downloading TikTok videos safe?
             </AccordionTrigger>
             <AccordionContent className="text-sm">
-              There are no limits! You can view and download as many TikTok
-              videos as you like, completely free.
+              Downloading videos from our platform is safe and secure. We
+              prioritize your privacy and ensure the process is free from
+              malware or unnecessary ads.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-7">
             <AccordionTrigger className="text-base">
-              7.Does this tool work for TikTok videos from all regions?
+              7. Are TikTok video downloads free?
             </AccordionTrigger>
             <AccordionContent className="text-sm">
-              Yes, you can use this tool to view and download TikTok videos from
-              any region, as long as they are publicly available.
+              Yes, downloading TikTok videos using our platform is completely
+              free.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-8">
             <AccordionTrigger className="text-base">
-              8.Does the tool store any of my personal data?
+              8. Can I download private TikTok videos?
             </AccordionTrigger>
             <AccordionContent className="text-sm">
-              No, we don’t collect or store any of your data. The tool operates
-              without requiring login or registration, ensuring your complete
-              privacy.
+              Unfortunately, private TikTok videos cannot be downloaded as they
+              are restricted by the uploader's privacy settings.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-9">
             <AccordionTrigger className="text-base">
-              9.Why is this tool free to use?
+              9. Why do some videos still have watermarks?
             </AccordionTrigger>
             <AccordionContent className="text-sm">
-              We believe in providing value without barriers. The tool is
-              supported through other means, ensuring it remains free for all
-              users.
+              While our system removes most watermarks, there may be some cases
+              where it cannot completely remove them due to video complexity or
+              recent TikTok updates.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-10">
             <AccordionTrigger className="text-base">
-              10.Is it legal to download TikTok videos anonymously?
+              10. Does this work on all devices and browsers?
             </AccordionTrigger>
             <AccordionContent className="text-sm">
-              Downloading TikTok videos for personal use is generally
-              acceptable. However, ensure you don’t violate TikTok’s terms of
-              service or misuse the content without the creator’s permission.
+              Yes, our downloader is compatible with most devices and popular
+              browsers, including Chrome, Firefox, Safari, and Edge.
             </AccordionContent>
           </AccordionItem>
         </Accordion>
@@ -515,4 +465,3 @@ const Page = () => {
 };
 
 export default Page;
-

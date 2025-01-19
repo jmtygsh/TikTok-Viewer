@@ -95,7 +95,7 @@ export default function Navbar() {
                       </span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
+                  {/* <DropdownMenuItem asChild>
                     <Link href="/trending-videos" className="my-2">
                       <span className="flex items-center gap-2">
                         <Image
@@ -136,7 +136,7 @@ export default function Navbar() {
                         Trending Hashtags
                       </span>
                     </Link>
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
                 </DropdownMenuContent>
               </DropdownMenu>
             </li>
