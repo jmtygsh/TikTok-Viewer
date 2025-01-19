@@ -17,7 +17,7 @@ bun dev
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 
-## Used API from https://tikapi.io/
+# Used API from https://tikapi.io/
 
-## Used Squid Proxy to bypass ban issue
+# Used Squid Proxy to bypass ban issue
 
