@@ -4,7 +4,7 @@ import { URL } from 'url';       // For extracting query parameters from the req
 import { HttpsProxyAgent } from 'https-proxy-agent'; // Correct import for https-proxy-agent
 
 // URL of the Squid proxy with username and password
-const proxyUrl = "http://ygshjmt:yogesh1590@93.127.216.31:3128";  // Replace with actual username and password
+const proxyUrl = "http://username:passowrd.127.206.01:3128";  // Replace with actual username, password, ip address of squid proxy & port
 
 // Create an HTTPS proxy agent
 const agent = new HttpsProxyAgent(proxyUrl);  // Using https-proxy-agent to handle both HTTP and HTTPS
